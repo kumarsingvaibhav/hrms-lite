@@ -1,15 +1,22 @@
 services:
   - type: web
     name: hrms-lite-backend
-    runtime: python 
+    runtime: python
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 2
+
     envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+
       - key: MONGODB_URL
-        sync: false          # set manually in Render dashboard
+        sync: false
+
       - key: MONGODB_DB_NAME
         value: hrms_lite
+
       - key: DEBUG
         value: "False"
+
       - key: ALLOWED_ORIGINS
-        sync: false          # set to your Vercel/Netlify URL
+        sync: false
