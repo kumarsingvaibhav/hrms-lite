@@ -1,301 +1,225 @@
 # HRMS Lite — Complete Setup & Deployment Guide
 
-A production-grade HR Management System built with React + FastAPI + MongoDB.
+A production-grade HR Management System built with **React + FastAPI + MongoDB**.
 
 ---
 
-## Project Structure
+## 📁 Project Structure
 
+```
 hrms-lite/
-├── hrms-backend/ ← FastAPI + MongoDB backend
-└── hrms-frontend/ ← React + Vite frontend
+├── hrms-backend/       ← FastAPI + MongoDB backend
+└── hrms-frontend/      ← React + Vite frontend
+```
 
 ---
 
-## PART 1 — LOCAL DEVELOPMENT SETUP
+## 🚀 PART 1 — LOCAL DEVELOPMENT SETUP
 
-### Prerequisites — Install These First
+### ✅ Prerequisites
 
-| Tool              | Version | Download                                       |
-| ----------------- | ------- | ---------------------------------------------- |
-| Python            | 3.11+   | https://python.org/downloads                   |
-| Node.js           | 18+     | https://nodejs.org                             |
-| MongoDB Community | 7.0     | https://www.mongodb.com/try/download/community |
-| Git               | Any     | https://git-scm.com                            |
+| Tool    | Version | Download                                       |
+| ------- | ------- | ---------------------------------------------- |
+| Python  | 3.11+   | https://python.org/downloads                   |
+| Node.js | 18+     | https://nodejs.org                             |
+| MongoDB | 7.0     | https://www.mongodb.com/try/download/community |
+| Git     | Any     | https://git-scm.com                            |
 
 ---
 
-### Step 1 — Start MongoDB Locally
+## 🧠 Step 1 — Start MongoDB
 
-**macOS (Homebrew):**
-bash
+### macOS
+
+```bash
 brew tap mongodb/brew
 brew install mongodb-community
 brew services start mongodb-community
+```
 
-**Windows:**
+### Ubuntu/Linux
 
-1. Download MongoDB Community Server from the link above
-2. Run the installer (choose "Complete")
-3. MongoDB runs as a Windows Service automatically
-
-**Ubuntu/Linux:**
-bash
+```bash
 sudo apt-get install -y mongodb
 sudo systemctl start mongod
 sudo systemctl enable mongod
+```
 
-Verify MongoDB is running:
-bash
+Verify:
+
+```bash
 mongosh
-
-# Should show a prompt — type exit to quit
+```
 
 ---
 
-### Step 2 — Set Up the Backend
+## ⚙️ Step 2 — Backend Setup
 
-bash
-
-# Navigate to backend folder
-
+```bash
 cd hrms-lite/hrms-backend
-
-# Create Python virtual environment
-
 python -m venv venv
+```
 
-# Activate it
+Activate:
 
-# macOS/Linux:
+**Windows**
 
-source venv/bin/activate
-
-# Windows:
-
+```bash
 venv\Scripts\activate
+```
 
-# Install all dependencies
+**Mac/Linux**
 
+```bash
+source venv/bin/activate
+```
+
+Install deps:
+
+```bash
 pip install -r requirements.txt
-
-# Create your .env file from the template
-
 cp .env.example .env
+```
 
-Your `.env` file should look like this (defaults work for local):
-env
+`.env`
+
+```env
 APP_NAME=HRMS Lite
 APP_VERSION=1.0.0
 DEBUG=True
 MONGODB_URL=mongodb://localhost:27017
 MONGODB_DB_NAME=hrms_lite
 ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
+```
 
-Start the backend:
-bash
+Run backend:
+
+```bash
 python run.py
+```
 
-You should see:
-
-INFO MongoDB connected — database: hrms_lite
-INFO HRMS Lite v1.0.0 started. Docs at /docs
-INFO Uvicorn running on http://0.0.0.0:8000
-
-Open http://localhost:8000/docs — you'll see the interactive Swagger UI.
+Open:
+👉 http://localhost:8000/docs
 
 ---
 
-### Step 3 — Set Up the Frontend
+## 🎨 Step 3 — Frontend Setup
 
-Open a **new terminal** (keep backend running):
-
-bash
-
-# Navigate to frontend folder
-
+```bash
 cd hrms-lite/hrms-frontend
-
-# Install Node dependencies
-
 npm install
-
-# Start development server
-
 npm run dev
+```
 
-You should see:
-
-VITE v5.x.x ready in xxx ms
-➜ Local: http://localhost:5173/
-
-Open http://localhost:5173 — your HRMS app is live! ✅
-
-> The Vite dev server automatically proxies `/api/*` requests to `http://localhost:8000`
-> so you never get CORS errors during local development.
+Open:
+👉 http://localhost:5173
 
 ---
 
-## PART 2 — DEPLOYMENT
+## 🌍 PART 2 — DEPLOYMENT
 
-### Step A — Set Up MongoDB Atlas (Free Cloud Database)
+### 🗄 MongoDB Atlas
 
-1. Go to https://www.mongodb.com/atlas and create a free account
-2. Click **"Build a Database"** → choose **M0 Free Tier**
-3. Choose a cloud provider (AWS recommended) and region closest to you
-4. Click **"Create"**
-5. **Create a database user:**
-   - Username: `hrms_admin`
-   - Password: generate a strong password, **copy it**
-6. **Set network access:**
-   - Click "Add IP Address" → "Allow Access from Anywhere" (`0.0.0.0/0`)
-   - This allows Render's servers to connect
-7. **Get your connection string:**
-   - Click "Connect" → "Drivers"
-   - Copy the string, it looks like:
-     `mongodb+srv://hrms_admin:<password>@cluster0.xxxxx.mongodb.net/`
-   - Replace `<password>` with your actual password
+Create free cluster → create DB user → allow network `0.0.0.0/0` → copy connection string.
 
 ---
 
-### Step B — Deploy Backend to Render
+### ☁️ Backend — Render
 
-1. Push your code to GitHub:
-   bash
-   cd hrms-lite
-   git init
-   git add .
-   git commit -m "Initial commit"
+Build:
 
-   # Create a repo on github.com, then:
+```bash
+pip install -r requirements.txt
+```
 
-   git remote add origin https://github.com/YOUR_USERNAME/hrms-lite.git
-   git push -u origin main
+Start:
 
-2. Go to https://render.com and sign up (free)
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port $PORT
+```
 
-3. Click **"New +"** → **"Web Service"**
+Env:
 
-4. Connect your GitHub repo
-
-5. Configure the service:
-   - **Name:** `hrms-lite-backend`
-   - **Root Directory:** `hrms-backend`
-   - **Runtime:** `Python 3`
-   - **Build Command:** `pip install -r requirements.txt`
-   - **Start Command:** `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-
-6. Add **Environment Variables** (click "Add Environment Variable"):
-   | Key | Value |
-   |-----|-------|
-   | `MONGODB_URL` | your Atlas connection string |
-   | `MONGODB_DB_NAME` | `hrms_lite` |
-   | `DEBUG` | `False` |
-   | `ALLOWED_ORIGINS` | `https://your-app.vercel.app` (fill in after frontend deploy) |
-
-7. Click **"Create Web Service"** — wait ~3 minutes for first deploy
-
-8. Copy your backend URL: `https://hrms-lite-backend.onrender.com`
-
-   Test it: open `https://hrms-lite-backend.onrender.com/health` — should return `{"status":"ok"}`
+```
+MONGODB_URL=atlas url
+MONGODB_DB_NAME=hrms_lite
+DEBUG=False
+ALLOWED_ORIGINS=https://your-vercel.app
+```
 
 ---
 
-### Step C — Deploy Frontend to Vercel
+### ⚡ Frontend — Vercel
 
-1. Go to https://vercel.com and sign up with GitHub
+Env:
 
-2. Click **"Add New Project"** → import your repo
+```
+VITE_API_BASE_URL=https://your-backend.onrender.com
+```
 
-3. Configure:
-   - **Framework Preset:** Vite
-   - **Root Directory:** `hrms-frontend`
-   - **Build Command:** `npm run build`
-   - **Output Directory:** `dist`
+Build:
 
-4. Add **Environment Variable:**
-   | Key | Value |
-   |-----|-------|
-   | `VITE_API_BASE_URL` | `https://hrms-lite-backend.onrender.com` |
-
-5. Click **"Deploy"** — wait ~1 minute
-
-6. Your app is live at `https://hrms-lite-frontend.vercel.app` ✅
+```bash
+npm run build
+```
 
 ---
 
-### Step D — Update CORS on Backend
+### 🔐 Update CORS
 
-Now that you have your Vercel URL, go back to Render:
+Set in Render:
 
-1. Open your backend service → **Environment**
-2. Update `ALLOWED_ORIGINS` to your actual Vercel URL:
+```
+ALLOWED_ORIGINS=https://your-vercel.app
+```
 
-   https://hrms-lite-frontend.vercel.app
-
-3. Render will auto-redeploy
-
----
-
-## PART 3 — VERIFY EVERYTHING WORKS
-
-Test these in order:
-
-1. **Backend health:** `https://your-backend.onrender.com/health` → `{"status":"ok"}`
-2. **API docs:** `https://your-backend.onrender.com/docs` → Swagger UI loads
-3. **Frontend loads:** `https://your-app.vercel.app` → Dashboard appears
-4. **Add an employee:** Fill form → employee appears in list
-5. **Mark attendance:** Select date → toggle Present/Absent → Save
-6. **View history:** Click "History" on any employee → records appear
+Redeploy.
 
 ---
 
-## PART 4 — TROUBLESHOOTING
+## ✅ VERIFY
 
-### Backend won't start
-
-- Check `pip install -r requirements.txt` ran without errors
-- Make sure MongoDB is running: `mongosh` should connect
-- Check `.env` file exists and `MONGODB_URL` is correct
-
-### Frontend shows blank / can't connect
-
-- Is backend running on port 8000?
-- Check browser console (F12) for error messages
-- In local dev: `VITE_API_BASE_URL` should be **empty** (proxy handles it)
-- In production: `VITE_API_BASE_URL` must be set to your Render URL
-
-### 409 Conflict errors
-
-- Employee ID or email already exists — use a different one
-
-### Render backend "sleeping" (free tier)
-
-- Render free tier sleeps after 15 mins of inactivity
-- First request after sleep takes ~30 seconds to wake up
-- This is normal on free tier — paid tier stays always-on
-
-### MongoDB Atlas connection refused
-
-- Check "Network Access" in Atlas allows `0.0.0.0/0`
-- Verify the password in connection string has no special chars that need URL encoding
+1. Backend health works
+2. Swagger opens
+3. Frontend loads
+4. CRUD employees works
+5. Attendance works
 
 ---
 
-## Quick Reference — API Endpoints
+## 🛠 TROUBLESHOOTING
 
-| Method | URL                                       | What it does       |
-| ------ | ----------------------------------------- | ------------------ |
-| GET    | `/health`                                 | Health check       |
-| GET    | `/api/v1/dashboard`                       | Dashboard stats    |
-| GET    | `/api/v1/employees`                       | List all employees |
-| POST   | `/api/v1/employees`                       | Add employee       |
-| DELETE | `/api/v1/employees/:id`                   | Delete employee    |
-| POST   | `/api/v1/attendance`                      | Mark attendance    |
-| GET    | `/api/v1/attendance/employee/:id`         | Get history        |
-| GET    | `/api/v1/attendance/employee/:id/summary` | Get stats          |
-| GET    | `/api/v1/attendance/date/:date`           | Get by date        |
+**Blank frontend**
 
-#   h r m s - l i t e 
- 
- 
+* Check console
+* Check API URL
+
+**409 error**
+
+* Duplicate employee
+
+**Render sleeping**
+
+* First request slow
+
+**Atlas connection**
+
+* Check network access
+
+---
+
+## 📡 API Endpoints
+
+| Method | URL                               | Purpose |
+| ------ | --------------------------------- | ------- |
+| GET    | `/health`                         | Health  |
+| GET    | `/api/v1/dashboard`               | Stats   |
+| GET    | `/api/v1/employees`               | List    |
+| POST   | `/api/v1/employees`               | Create  |
+| DELETE | `/api/v1/employees/:id`           | Delete  |
+| POST   | `/api/v1/attendance`              | Mark    |
+| GET    | `/api/v1/attendance/employee/:id` | History |
+
+---
+
+⭐ Built for learning full-stack deployment workflow.
