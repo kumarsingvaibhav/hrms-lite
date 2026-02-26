@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap');
+
+/* ── Design tokens ─────────────────────────────────────────────────────────── */
+:root {
+  --bg:             #F7F8FA;
+  --surface:        #FFFFFF;
+  --surface-2:      #F2F4F7;
+  --border:         #E4E7EC;
+  --border-light:   #F0F2F5;
+
+  --text-primary:   #101828;
+  --text-secondary: #475467;
+  --text-muted:     #98A2B3;
+
+  --accent:         #2563EB;
+  --accent-hover:   #1D4ED8;
+  --accent-light:   #EFF4FF;
+
+  --success:        #12B76A;
+  --success-light:  #ECFDF3;
+  --danger:         #F04438;
+  --danger-light:   #FEF3F2;
+  --warning:        #F79009;
+  --warning-light:  #FFFAEB;
+
+  --sidebar-w:      240px;
+  --header-h:       64px;
+
+  --radius:         10px;
+  --radius-sm:      6px;
+  --radius-lg:      14px;
+
+  --shadow-sm:      0 1px 2px rgba(16,24,40,.05);
+  --shadow:         0 1px 3px rgba(16,24,40,.1), 0 1px 2px rgba(16,24,40,.06);
+  --shadow-md:      0 4px 8px -2px rgba(16,24,40,.1), 0 2px 4px -2px rgba(16,24,40,.06);
+  --shadow-lg:      0 12px 24px -4px rgba(16,24,40,.12), 0 4px 8px -2px rgba(16,24,40,.06);
+
+  --transition:     all 0.18s ease;
+  --font:           'DM Sans', sans-serif;
+  --font-mono:      'DM Mono', monospace;
+}
+
+/* ── Reset ─────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ── Animations ────────────────────────────────────────────────────────────── */
+@keyframes fadeIn   { from { opacity: 0 }                   to { opacity: 1 } }
+@keyframes slideUp  { from { opacity: 0; transform: translateY(14px) } to { opacity: 1; transform: none } }
+@keyframes toastIn  { from { opacity: 0; transform: translateX(20px) } to { opacity: 1; transform: none } }
+@keyframes shimmer  {
+  0%   { background-position: 200% 0 }
+  100% { background-position: -200% 0 }
+}
+
+/* ── Skeleton ──────────────────────────────────────────────────────────────── */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--surface-2) 25%,
+    var(--border-light) 50%,
+    var(--surface-2) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 6px;
+}
