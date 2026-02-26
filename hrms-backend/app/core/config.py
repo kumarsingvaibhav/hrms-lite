@@ -8,7 +8,8 @@ class Settings(BaseSettings):
     APP_VERSION: str = "1.0.0"
     DEBUG: bool = False
 
-    MONGODB_URL: str = "mongodb://localhost:27017"
+    # ❗ Required → no localhost fallback
+    MONGODB_URL: str
     MONGODB_DB_NAME: str = "hrms_lite"
 
     ALLOWED_ORIGINS: str = "http://localhost:3000,http://localhost:5173"
